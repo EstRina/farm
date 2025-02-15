@@ -5,8 +5,11 @@ import java.util.Set;
 import farming.farmer.dto.AddressDto;
 import farming.farmer.dto.FarmerDto;
 import farming.products.entity.Product;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -31,10 +34,14 @@ public class Farmer {
 	String email;
 	String phone;
 	
-	@OneToOne
+	@Embedded
 	AddressDto address;
 	
+	double balance;
+	
 	@ManyToMany(mappedBy = "farmers")
+	@JoinTable(name = "farmer_products", joinColumns = @JoinColumn(name = "farmer_id"),
+	inverseJoinColumns = @JoinColumn(name = "product_id"))
 	Set<Product> products;
 	
 		public static Farmer of(FarmerDto dto) {

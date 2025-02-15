@@ -22,4 +22,5 @@ public interface IProductsService {
 	List<ProductDto> getSoldProducts(Long farmerId);
 	List<SaleRecordsDto> getPurchasedProducts(Long customerId);
 	List<RemoveProductDataDto> getHistoryOfRemovedProducts(Long farmerId);
+	RemoveProductDataDto removeProduct(Long productId, Long farmerId);
 }
