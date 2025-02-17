@@ -1,6 +1,7 @@
 package farming.products.service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,6 +46,7 @@ public class ProductsService implements IProductsService{
 	CartItemRepository cartItemRepo;
 	
 	@Override
+	@Transactional
 	public boolean addProduct(ProductDto productDto) {
 		Product product = new Product();
         product.productName = productDto.getProductName();
@@ -57,6 +59,7 @@ public class ProductsService implements IProductsService{
 	}
 
 	@Override
+	@Transactional
 	public boolean updateProduct(ProductDto productDto) {
 		Product product = productRepo.findById(productDto.getProductId()).orElseThrow(() ->
 		new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not exsists"));
@@ -71,6 +74,7 @@ public class ProductsService implements IProductsService{
 	}
 
 	@Override
+	@Transactional
 	public RemoveProductDataDto removeProduct(Long productId, Long farmerId) {
 		Product product = productRepo.findById(productId).orElseThrow(() ->
 		new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not exsists"));
@@ -166,13 +170,6 @@ public class ProductsService implements IProductsService{
 		return cart.build();
 	}
 
-//	private Cart createCart(Long customerId) {
-//		Customer customer = customerRepo.findById(customerId).orElseThrow(() ->
-//		new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not exsists"));
-//		Cart cart = 
-//		return null;
-//	}
-
 	@Override
 	@Transactional
 	public CartDto addToCart(Long customerId, Long productId, int quantity) {
@@ -185,23 +182,30 @@ public class ProductsService implements IProductsService{
 		return cart.build();
 	}
 
-	private Cart createCart(Long customerId) {
-	// TODO Auto-generated method stub
-	return null;
+	private Cart createCart(Long customerId) {	
+		Customer customer = customerRepo.findById(customerId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not exsists"));
+		Cart cart = Cart.builder().customerId(customerId).items(new HashSet<>()).build();
+	return cartRepo.save(cart);
 }
 
 	@Override
 	@Transactional
 	public CartDto removeFromCart(Long customerId, Long productId) {
-		// TODO Auto-generated method stub
-		return null;
+		Cart cart = cartRepo.findById(customerId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Curt not found by this id" + customerId));
+		cart.getItems().removeIf(i -> i.getId().equals(productId));
+		cart = cartRepo.save(cart);
+		return cart.build();
 	}
 
 	@Override
 	@Transactional
 	public CartDto clearCart(Long customerId) {
-		// TODO Auto-generated method stub
-		return null;
+		Cart cart = cartRepo.findById(customerId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Curt not found by this id" + customerId));
+		cart.getItems().clear();
+		return cart.build();
 	}
 
 	@Override
