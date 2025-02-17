@@ -12,11 +12,16 @@ import org.springframework.web.server.ResponseStatusException;
 
 import farming.customer.entity.Customer;
 import farming.farmer.entity.Farmer;
+import farming.products.dto.CartDto;
+import farming.products.dto.CartItemDto;
 import farming.products.dto.ProductDto;
 import farming.products.dto.RemoveProductDataDto;
 import farming.products.dto.SaleRecordsDto;
+import farming.products.entity.Cart;
 import farming.products.entity.Product;
 import farming.products.entity.SaleRecords;
+import farming.repo.CartItemRepository;
+import farming.repo.CartRepository;
 import farming.repo.CustomerRepository;
 import farming.repo.FarmerRepositiry;
 import farming.repo.ProductsRepository;
@@ -34,6 +39,10 @@ public class ProductsService implements IProductsService{
 	SaleRecordsRepository saleRecordsRepo;
 	@Autowired
 	CustomerRepository customerRepo;
+	@Autowired
+	CartRepository cartRepo;
+	@Autowired
+	CartItemRepository cartItemRepo;
 	
 	@Override
 	public boolean addProduct(ProductDto productDto) {
@@ -149,6 +158,64 @@ public class ProductsService implements IProductsService{
 		return productRepo.findRemovedProductsByFarmerId(farmerId).stream().
 				map(p -> new RemoveProductDataDto(p.build(), List.of())).collect(Collectors.toList());
 	}
+
+	@Override
+	public CartDto getCart(Long customerId) {
+		Cart cart = cartRepo.findById(customerId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Curt not found by this id" + customerId));
+		return cart.build();
+	}
+
+//	private Cart createCart(Long customerId) {
+//		Customer customer = customerRepo.findById(customerId).orElseThrow(() ->
+//		new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not exsists"));
+//		Cart cart = 
+//		return null;
+//	}
+
+	@Override
+	@Transactional
+	public CartDto addToCart(Long customerId, Long productId, int quantity) {
+		Cart cart = cartRepo.findById(customerId).orElseGet(() -> createCart(customerId));
+		Product product = productRepo.findById(productId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not exsists"));
+		CartItemDto dto = new CartItemDto(null, product.build(), quantity, product.getPrice());
+		cart.getItems().add(dto);
+		cart = cartRepo.save(cart);
+		return cart.build();
+	}
+
+	private Cart createCart(Long customerId) {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+	@Override
+	@Transactional
+	public CartDto removeFromCart(Long customerId, Long productId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public CartDto clearCart(Long customerId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public CartDto updateCartItemQuantity(Long customerId, Long productId, int newQuantity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean checkout(Long customerId) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 
 	
 
