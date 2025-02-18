@@ -210,14 +210,40 @@ public class ProductsService implements IProductsService{
 
 	@Override
 	public CartDto updateCartItemQuantity(Long customerId, Long productId, int newQuantity) {
-		// TODO Auto-generated method stub
-		return null;
+		Cart cart = cartRepo.findById(customerId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Curt not found by this id" + customerId));
+		cart.getItems().stream().filter(i -> i.getId().equals(productId)).findFirst().ifPresent(i -> i.setQuantity(newQuantity));
+		cart = cartRepo.save(cart);
+		return cart.build();
 	}
 
 	@Override
 	public boolean checkout(Long customerId) {
-		// TODO Auto-generated method stub
+		Cart cart = cartRepo.findById(customerId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Curt not found by this id" + customerId));
+		if(cart.getItems().isEmpty())
 		return false;
+		
+		double totalCost = getTotalCost(customerId);
+		Customer customer = customerRepo.findById(customerId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not exsists"));
+		if(customer.getBalance() < totalCost)
+			return false;
+		
+		customer.setBalance(customer.getBalance() - totalCost);
+		customerRepo.save(customer);
+		
+		cart.getItems().clear();
+		cartRepo.save(cart);
+		return true;
+		
+	}
+
+	@Override
+	public double getTotalCost(Long customerId) {
+		Cart cart = cartRepo.findById(customerId).orElseThrow(() ->
+		new ResponseStatusException(HttpStatus.NOT_FOUND, "Curt not found by this id" + customerId));
+		return cart.getItems().stream().mapToDouble(i -> i.getPrice() * i.getQuantity()).sum();
 	}
 
 

@@ -29,6 +29,6 @@ public interface IProductsService {
 	CartDto updateCartItemQuantity(Long customerId, Long productId, int newQuantity);
 	CartDto removeFromCart(Long customerId, Long productId);
 	CartDto clearCart(Long customerId);
-//	double getCartTotal(Long customerId);
-	boolean checkout(Long customerId); //это если в корзине висит 10 позиций, а кто то купил часть, то это проверка хватает ли этих позиций
+	double getTotalCost(Long customerId); 
+	boolean checkout(Long customerId); // это проверка баланса
 }

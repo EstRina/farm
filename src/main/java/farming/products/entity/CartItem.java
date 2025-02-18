@@ -1,8 +1,5 @@
 package farming.products.entity;
 
-import java.util.Set;
-
-import farming.customer.entity.Customer;
 import farming.products.dto.CartItemDto;
 import farming.products.dto.ProductDto;
 import jakarta.persistence.Entity;

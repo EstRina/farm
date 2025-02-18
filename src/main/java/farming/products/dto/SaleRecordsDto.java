@@ -2,8 +2,6 @@ package farming.products.dto;
 
 import java.time.LocalDateTime;
 
-import farming.customer.entity.Customer;
-import farming.farmer.entity.Farmer;
 import farming.products.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
