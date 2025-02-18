@@ -1,5 +1,6 @@
-package farming.products.dto;
+package farming.cart.dto;
 
+import farming.products.dto.ProductDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

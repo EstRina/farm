@@ -1,4 +1,4 @@
-package farming.products.dto;
+package farming.cart.dto;
 
 import java.util.Set;
 

@@ -14,12 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import farming.products.dto.CartDto;
 import farming.products.dto.ProductDto;
 import farming.products.dto.RemoveProductDataDto;
 import farming.products.dto.SaleRecordsDto;
 import farming.products.service.IProductsService;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/products")
@@ -42,7 +40,7 @@ public class ProductsController{
 	  public ProductDto getProduct(@PathVariable Long productId) {
         return productService.getProduct(productId);
     }
-	}
+	
 
 	@GetMapping("/byFarmer/{farmerId}")
 	public Set<ProductDto> getProductsByFarmer(@PathVariable Long farmerId) {
@@ -86,45 +84,5 @@ public class ProductsController{
 		return productService.removeProduct(productId, farmerId);
 	}
 
-//	@Override
-//	public CartDto getCart(Long customerId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public CartDto addToCart(Long customerId, Long productId, int quantity) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public CartDto updateCartItemQuantity(Long customerId, Long productId, int newQuantity) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public CartDto removeFromCart(Long customerId, Long productId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public CartDto clearCart(Long customerId) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public double getTotalCost(Long customerId) {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public boolean checkout(Long customerId) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
+
 }

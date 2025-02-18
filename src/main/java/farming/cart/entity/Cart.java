@@ -1,10 +1,10 @@
-package farming.products.entity;
+package farming.cart.entity;
 
 import java.util.Set;
 
+import farming.cart.dto.CartDto;
+import farming.cart.dto.CartItemDto;
 import farming.customer.entity.Customer;
-import farming.products.dto.CartDto;
-import farming.products.dto.CartItemDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

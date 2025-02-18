@@ -3,7 +3,7 @@ package farming.products.service;
 import java.util.List;
 import java.util.Set;
 
-import farming.products.dto.CartDto;
+import farming.cart.dto.CartDto;
 import farming.products.dto.ProductDto;
 import farming.products.dto.RemoveProductDataDto;
 import farming.products.dto.SaleRecordsDto;
@@ -24,11 +24,5 @@ public interface IProductsService {
 	List<RemoveProductDataDto> getHistoryOfRemovedProducts(Long farmerId);
 	RemoveProductDataDto removeProduct(Long productId, Long farmerId);
 	
-	CartDto getCart(Long customerId);
-	CartDto addToCart(Long customerId, Long productId, int quantity);
-	CartDto updateCartItemQuantity(Long customerId, Long productId, int newQuantity);
-	CartDto removeFromCart(Long customerId, Long productId);
-	CartDto clearCart(Long customerId);
-	double getTotalCost(Long customerId); 
-	boolean checkout(Long customerId); // это проверка баланса
+	
 }

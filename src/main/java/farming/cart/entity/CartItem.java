@@ -1,6 +1,6 @@
-package farming.products.entity;
+package farming.cart.entity;
 
-import farming.products.dto.CartItemDto;
+import farming.cart.dto.CartItemDto;
 import farming.products.dto.ProductDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
