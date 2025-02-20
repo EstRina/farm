@@ -8,7 +8,7 @@ import farming.accounting.dto.UserResponseDto;
 
 public interface IAccountingManagement {
 
-	UserResponseDto registration(UserRequestDto user);
+//	UserResponseDto registration(UserRequestDto user);
 	UserResponseDto removeUser(String login);
 	UserResponseDto getUser(String login);
 	UserResponseDto editUser(UserResponseDto user, String login);
@@ -23,4 +23,7 @@ public interface IAccountingManagement {
 	String getPasswordHash(String login);
 	LocalDateTime getActivationDate(String login);
 	RolesResponseDto getRoles(String login);
+	
+	
+	UserResponseDto registration(UserRequestDto userDto, boolean isFarmer);
 }
