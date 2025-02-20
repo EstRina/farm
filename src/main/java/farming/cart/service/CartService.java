@@ -10,12 +10,11 @@ import org.springframework.web.server.ResponseStatusException;
 import farming.cart.dto.CartDto;
 import farming.cart.dto.CartItemDto;
 import farming.cart.entity.Cart;
+import farming.cart.repo.CartItemRepository;
 import farming.customer.entity.Customer;
+import farming.customer.repo.CustomerRepository;
 import farming.products.entity.Product;
-import farming.repo.CartItemRepository;
-import farming.repo.CartRepository;
-import farming.repo.CustomerRepository;
-import farming.repo.ProductsRepository;
+import farming.products.repo.ProductsRepository;
 import jakarta.transaction.Transactional;
 
 @Service

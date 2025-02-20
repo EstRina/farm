@@ -1,4 +1,4 @@
-package farming.repo;
+package farming.farmer.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

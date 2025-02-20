@@ -3,7 +3,6 @@ package farming.products.service;
 import java.util.List;
 import java.util.Set;
 
-import farming.cart.dto.CartDto;
 import farming.products.dto.ProductDto;
 import farming.products.dto.RemoveProductDataDto;
 import farming.products.dto.SaleRecordsDto;

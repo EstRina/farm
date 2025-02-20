@@ -1,33 +1,37 @@
+
 package farming.accounting.entity;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import farming.accounting.dto.UserRequestDto;
+import jakarta.persistence.*;
+import lombok.*;
 
 import farming.accounting.dto.UserResponseDto;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Getter
-@Setter
-@Document(collection = "user-accounts")
+@AllArgsConstructor
+@Data
+@Builder
+@Entity
+@Table(name = "user_account")
 public class UserAccount {
-	
-	@Id
-	@Setter(value = AccessLevel.NONE)
+
+   	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	private String login;
-	
 	private String hash;
 	private String firstName;
 	private String lastName;
-	private HashSet<String> roles = new HashSet<String>();
+	private String roles;
 	private LocalDateTime activationDate;
 	private boolean revoked;
+
+	@Transient
 	private LinkedList<String> lastHash = new LinkedList<String>();
+
 	
 	public UserAccount(String login, String hash, String firstName, String lastName) {
 		super();
@@ -35,23 +39,14 @@ public class UserAccount {
 		this.hash = hash;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		roles.add("USER");
+		roles = "USER";
 		activationDate = LocalDateTime.now();
 		
 	}
 	
 	public UserAccount() {
-		roles.add("USER");
+		roles ="USER";
 		activationDate = LocalDateTime.now();
-	}
-
-	public UserResponseDto build() {
-		UserResponseDto dto = new UserResponseDto();
-		dto.setLogin(login);
-		dto.setFirstName(firstName);
-		dto.setLastName(lastName);
-		dto.setRoles(roles);
-		return dto;
 	}
 
 }

@@ -11,9 +11,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import farming.farmer.dto.FarmerDto;
 import farming.farmer.entity.Farmer;
+import farming.farmer.repo.FarmerRepositiry;
 import farming.products.entity.Product;
-import farming.repo.FarmerRepositiry;
-import farming.repo.ProductsRepository;
+import farming.products.repo.ProductsRepository;
 
 @Service
 public class FarmerService implements IFarmerService{

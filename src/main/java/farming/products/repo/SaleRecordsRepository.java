@@ -1,4 +1,4 @@
-package farming.repo;
+package farming.products.repo;
 
 import java.util.List;
 
