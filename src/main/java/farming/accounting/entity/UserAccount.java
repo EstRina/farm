@@ -1,12 +1,15 @@
 package farming.accounting.entity;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.springframework.data.annotation.Id;
 
 import farming.accounting.dto.UserResponseDto;
+import farming.accounting.dto.UserType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +17,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-//@Document(collection = "user-accounts")
+@Table(name = "user-accounts")
 public class UserAccount {
 	
 	@Id
@@ -24,36 +27,30 @@ public class UserAccount {
 	private String hash;
 	private String firstName;
 	private String lastName;
-	private HashSet<String> roles = new HashSet<String>();
+	
+	@Enumerated(EnumType.STRING)
+	private UserType userType;
+	
 	private LocalDateTime activationDate;
 	private boolean revoked;
 	private LinkedList<String> lastHash = new LinkedList<String>();
 	
-	public UserAccount(String login, String hash, String firstName, String lastName) {
+	public UserAccount(String login, String hash, String firstName, String lastName, UserType userType) {
 		super();
 		this.login = login;
 		this.hash = hash;
 		this.firstName = firstName;
 		this.lastName = lastName;
-		roles.add("USER");
+		this.userType = userType;
 		activationDate = LocalDateTime.now();
-		
-	}
+		}
 	
-	public UserAccount() {
-		roles.add("USER");
-		activationDate = LocalDateTime.now();
-	}
-
 	public UserResponseDto build() {
 		UserResponseDto dto = new UserResponseDto();
 		dto.setLogin(login);
 		dto.setFirstName(firstName);
 		dto.setLastName(lastName);
-		dto.setRoles(roles);
 		return dto;
 	}
 
 }
-
-// admin -> readWrite -> reader -> user

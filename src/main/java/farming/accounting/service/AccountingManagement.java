@@ -8,15 +8,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import farming.accounting.dto.RolesResponseDto;
 import farming.accounting.dto.UserRequestDto;
 import farming.accounting.dto.UserResponseDto;
+import farming.accounting.dto.UserType;
 import farming.accounting.dto.exceptions.AccountActivateException;
 import farming.accounting.dto.exceptions.AccountRevokeException;
 import farming.accounting.dto.exceptions.PasswordValidException;
 import farming.accounting.dto.exceptions.UserExistsException;
 import farming.accounting.dto.exceptions.UserNotFoundException;
 import farming.accounting.entity.UserAccount;
+import farming.customer.service.CustomerService;
+import farming.farmer.service.FarmerService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +28,8 @@ public class AccountingManagement implements IAccountingManagement, CommandLineR
 
 	private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final FarmerService farmerService; 
+	private final CustomerService customerService;
 
 	@Value("${password.length:5}")
 	private int passwordLength;
@@ -35,7 +39,7 @@ public class AccountingManagement implements IAccountingManagement, CommandLineR
 
 	@Override
 	@Transactional
-	public UserResponseDto registration(UserRequestDto userDto, boolean isFarmer) {
+	public UserResponseDto registration(UserRequestDto userDto, UserType userType) {
 		String password = userDto.getPassword();
 		String login = userDto.getLogin();
 		if(!isPasswordValid(password))
@@ -44,14 +48,14 @@ public class AccountingManagement implements IAccountingManagement, CommandLineR
 		if (userRepository.existsById(login)) {
 			throw new UserExistsException(login);
 		}
-		UserAccount user = new UserAccount(login, passwordEncoder.encode(password),
-				userDto.getFirstName(), userDto.getLastName());
-		if (isFarmer) {
-			user.getRoles().add("FARMER");
-		} else {
-			user.getRoles().add("CUSTOMER");
-		}
+		UserAccount user = new UserAccount(login, passwordEncoder.encode(password), userDto.getFirstName(),
+				userDto.getLastName(), userType);
 		userRepository.save(user);
+		if (userType == UserType.FARMER) {
+	        farmerService.createFarmerProfile(user);
+	    } else if (userType == UserType.CUSTOMER) {
+	        customerService.createCustomerProfile(user);
+	    }
 		return user.build();
 	}
 
@@ -151,35 +155,20 @@ public class AccountingManagement implements IAccountingManagement, CommandLineR
 		userRepository.save(user);
 		return true;
 	}
-
+	
 	@Override
-	@Transactional
-	public RolesResponseDto addRole(String login, String role) {
-		UserAccount user = getUserAccount(login);
-		HashSet<String> roles = user.getRoles();
-		if (roles.contains(role))
-			throw new IllegalArgumentException("Role already exists");
-		roles.add(role);
-		userRepository.save(user);
-		return new RolesResponseDto(login, roles);
+	public UserType getUserType(String login) {
+	    return userRepository.findById(login)
+	            .map(UserAccount::getUserType)
+	            .orElseThrow(() -> new UserNotFoundException(login));
 	}
 
-	@Override
-	@Transactional
-	public RolesResponseDto removeRole(String login, String role) {
-		UserAccount user = getUserAccount(login);
-		HashSet<String> roles = user.getRoles();
-		if (!roles.contains(role))
-			throw new IllegalArgumentException("Role doesnt exist");
-		roles.remove(role);
-		userRepository.save(user);
-		return new RolesResponseDto(login, roles);
-	}
 
 	private UserAccount getUserAccount(String login) {
 		UserAccount user = userRepository.findById(login).orElseThrow(() -> new UserNotFoundException(login));
 		return user;
 	}
+	
 
 	private String createHash(String password) {
 		return passwordEncoder.encode(password);
@@ -198,11 +187,12 @@ public class AccountingManagement implements IAccountingManagement, CommandLineR
 	}
 
 	@Override
-	public RolesResponseDto getRoles(String login) {
-		UserAccount user = getUserAccount(login);
-		return new RolesResponseDto(login, user.getRoles());
+	public void run(String... args) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 
+	
 //	@Override
 //	public void run(String... args) throws Exception {
 //		if(!template.exists(new Query(Criteria.where("login").is("admin")), UserAccount.class)) {
@@ -211,15 +201,15 @@ public class AccountingManagement implements IAccountingManagement, CommandLineR
 //			template.save(admin);
 //	}}
 
-	@Override
-	@Transactional
-	public void run(String... args) throws Exception {
-		if (!userRepository.existsById("admin")) {
-			UserAccount admin = new UserAccount("admin", passwordEncoder.encode("admin"), "", "");
-			admin.getRoles().add("ADMIN");
-			userRepository.save(admin);
-		}
-	}
+//	@Override
+//	@Transactional
+//	public void run(String... args) throws Exception {
+//		if (!userRepository.existsById("admin")) {
+//			UserAccount admin = new UserAccount("admin", passwordEncoder.encode("admin"), "", "");
+////			admin.getRoles().add("ADMIN");
+//			userRepository.save(admin);
+//		}
+//	}
 
 
 }

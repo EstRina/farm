@@ -29,6 +29,7 @@ public class Farmer {
 
 	@Id
 	Long farmerId;
+	String login;
 	String firstName;
 	String lastName;
 	String email;

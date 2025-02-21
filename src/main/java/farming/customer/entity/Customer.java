@@ -19,6 +19,7 @@ public class Customer {
 	
 	@Id
 	Long customerId;
+	String login;
 	String firstName;
 	String lastName;
 	String email;

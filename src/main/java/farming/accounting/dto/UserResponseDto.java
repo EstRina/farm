@@ -16,7 +16,7 @@ public class UserResponseDto {
 	private String login;
 	private String firstName;
 	private String lastName;
-	private HashSet<String> roles;
+	private UserType userType;
 	
 	
 }
